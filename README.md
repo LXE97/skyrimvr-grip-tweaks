@@ -1,4 +1,4 @@
-## (WIP) SKSE plugin source for Skyrim mod: [Wearable Healthbars](https://www.nexusmods.com/skyrimspecialedition/mods/65737)
+## (WIP) SKSE plugin source for Skyrim mod: VR Grip Tweaks
 
 ## Build instructions:
 1. install [vcpkg](https://github.com/microsoft/vcpkg)
@@ -7,4 +7,4 @@
 4. install VSCode
 5. open this repository's root folder in VSCode and it will automatically configure itself.
 
-based on project template: https://github.com/SkyrimScripting/SKSE_Template_MultipleSourceAndHeaderFiles
+thanks to mrowrpurr & github.com/SkyrimScripting for cmake templates
