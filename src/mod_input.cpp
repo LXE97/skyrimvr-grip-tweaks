@@ -18,7 +18,7 @@ namespace vrinput
 		}
 	};
 
-	bool  block_all_inputs = false;
+	bool block_all_inputs = false;
 
 	float joystick_dpad_threshold = 0.7f;
 	float joystick_dpad_threshold_negative = -0.7f;
@@ -68,6 +68,36 @@ namespace vrinput
 		hmdMatrix.m[2][3] = niTransform.translate.z;
 
 		return hmdMatrix;
+	}
+
+	void FocusWindow()
+	{
+		const char* windowName = "Skyrim VR";
+		HWND        targetWindow = FindWindowA(NULL, windowName);
+
+		if (targetWindow != NULL)
+		{
+			RECT windowRect;
+			GetWindowRect(targetWindow, &windowRect);
+
+			int centerX = windowRect.left + (windowRect.right - windowRect.left) / 2;
+			int centerY = windowRect.top + (windowRect.bottom - windowRect.top) / 2;
+
+			SetCursorPos(centerX, centerY);
+			SetForegroundWindow(targetWindow);
+		}
+	}
+
+	void SendClick(bool a_down, bool isLeft)
+	{
+		INPUT temp = {};
+		temp.type = INPUT_MOUSE;
+		if (isLeft) { temp.mi.dwFlags = a_down ? MOUSEEVENTF_LEFTDOWN : MOUSEEVENTF_LEFTUP; }
+		else { temp.mi.dwFlags = a_down ? MOUSEEVENTF_RIGHTDOWN : MOUSEEVENTF_RIGHTUP; }
+		temp.mi.dx = 0;
+		temp.mi.dy = 0;
+
+		SendInput(1, &temp, sizeof(INPUT));
 	}
 
 	void StartBlockingAll() { block_all_inputs = true; }
@@ -190,7 +220,7 @@ namespace vrinput
 		static uint64_t prev_Pressed_out[2] = {};
 		static uint64_t prev_touched_out[2] = {};
 
-		if (pControllerState && !menuchecker::isGameStopped())
+		if (pControllerState && !menu_checker::IsGameStopped())
 		{
 			bool isLeft = unControllerDeviceIndex == g_leftcontroller;
 			if (isLeft || unControllerDeviceIndex == g_rightcontroller)

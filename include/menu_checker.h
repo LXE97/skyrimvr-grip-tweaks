@@ -3,15 +3,15 @@
 
 #include <unordered_map>
 
-namespace menuchecker
+namespace menu_checker
 {
-	extern std::vector<std::string> gameStoppingMenus;
+	extern std::vector<std::string> gamestopping_menus;
 
-	extern std::unordered_map<std::string, bool> menuTypes;
+	extern std::unordered_map<std::string, bool> menu_types;
 
-	bool isGameStopped();
+	bool IsGameStopped();
 
 	void Init();
 
-	void onMenuOpenClose(RE::MenuOpenCloseEvent const* evn);
+	void OnMenuOpenClose(RE::MenuOpenCloseEvent const* evn);
 }

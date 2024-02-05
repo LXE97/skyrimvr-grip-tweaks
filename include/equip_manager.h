@@ -1,6 +1,6 @@
 #pragma once
 
-namespace equipmanager
+namespace equip_manager
 {
 	constexpr RE::FormID kTwoHandEquipSlot = 0x00013F45;
 	constexpr RE::FormID kRightHandEquipSlot = 0x00013F42;
@@ -18,6 +18,8 @@ namespace equipmanager
 
 	void FixEquipSlot(RE::FormID a_formID, bool a_make_onehanded);
 	void FixEquipSlot(RE::TESForm* a_form, bool a_make_onehanded);
+
+	bool IsTweakWeapon(RE::TESForm* a_form);
 
     void Init();
 }

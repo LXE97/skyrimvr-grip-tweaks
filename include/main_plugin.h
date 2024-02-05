@@ -1,6 +1,5 @@
 #pragma once
 
-#include "RE/N/NiRTTI.h"
 #include "VR/OpenVRUtils.h"
 #include "VR/PapyrusVRAPI.h"
 #include "VR/VRManagerAPI.h"
@@ -17,6 +16,8 @@ namespace griptweaks
 	extern OpenVRHookManagerAPI* g_OVRHookManager;
 
 	void StartMod();
-
-	void onEquipEvent(const RE::TESEquipEvent* event);
+	bool OnAttackButton(const vrinput::ModInputEvent& e);
+	void OnEquipEvent(const RE::TESEquipEvent* event);
+	void RegisterVRInputCallback();
+	void OnGameMenu(RE::MenuOpenCloseEvent const* evn);
 }

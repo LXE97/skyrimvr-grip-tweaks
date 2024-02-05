@@ -1,6 +1,6 @@
 #include "equip_manager.h"
 
-namespace equipmanager
+namespace equip_manager
 {
 	using namespace RE;
 
@@ -36,6 +36,18 @@ namespace equipmanager
 				}
 			}
 		}
+	}
+
+	bool IsTweakWeapon(RE::TESForm* a_form)
+	{
+		if (a_form)
+		{
+			if (auto weap = a_form->As<TESObjectWEAP>())
+			{
+				return (weapontypes_to_modify.contains(weap->GetWeaponType()));
+			}
+		}
+		return false;
 	}
 
 	void Init()

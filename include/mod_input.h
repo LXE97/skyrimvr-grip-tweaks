@@ -63,6 +63,9 @@ namespace vrinput
 	// If the press is blocked, then we don't need to block the release
 	typedef bool (*InputCallbackFunc)(const ModInputEvent& e);
 
+	void FocusWindow();
+	void SendClick(bool a_down, bool isLeft);
+
 	void StartBlockingAll();
 	void StopBlockingAll();
 	bool isBlockingAll();

@@ -1,10 +1,12 @@
 #pragma once
 #include "equip_manager.h"
+#include "menu_checker.h"
+#include "mod_input.h"
 
 namespace hooks
 {
 	using namespace RE;
-	using namespace equipmanager;
+	using namespace equip_manager;
 
 	struct ActorEquipManager_EquipObject
 	{
@@ -23,6 +25,7 @@ namespace hooks
 					FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(true), true);
 				}
 			}
+
 			func(a_self, a_actor, a_object, a_extraData, a_count, a_slot, a_queueEquip,
 				a_forceEquip, a_playSounds, a_applyNow);
 		}
@@ -39,14 +42,20 @@ namespace hooks
 				FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(false), true);
 				FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(true), true);
 			}
+
 			func(a_self, a_actor, a_spell, a_slot);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
 	};
 
+	static int counter = 0;
 	struct PlayerCharacter_Update
 	{
-		static void thunk(RE::PlayerCharacter* player, float delta) { func(player, delta); }
+		static void thunk(RE::PlayerCharacter* player, float delta)
+		{
+			if (!(counter++ % 400)) { vrinput::FocusWindow(); }
+			func(player, delta);
+		}
 		static inline REL::Relocation<decltype(thunk)> func;
 	};
 
