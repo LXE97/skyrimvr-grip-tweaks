@@ -7,4 +7,4 @@
 4. install VSCode
 5. open this repository's root folder in VSCode and it will automatically configure itself.
 
-thanks to mrowrpurr & github.com/SkyrimScripting for cmake templates
+thanks to mrowrpurr & [github.com/SkyrimScripting](https://github.com/SkyrimScripting) for cmake templates
