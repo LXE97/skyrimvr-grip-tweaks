@@ -18,6 +18,4 @@ namespace griptweaks
 	void StartMod();
 	void RegisterVRInputCallback();
 
-	bool AttackButtonHandler(const vrinput::ModInputEvent& e);
-	void EquipEventHandler(const RE::TESEquipEvent* event);
 }

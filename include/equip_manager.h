@@ -1,4 +1,6 @@
 #pragma once
+#include "mod_event_sink.hpp"
+#include "mod_input.h"
 
 namespace equip_manager
 {
@@ -14,6 +16,10 @@ namespace equip_manager
 		RE::WeaponTypes::kTwoHandAxe, RE::WeaponTypes::kTwoHandSword,
 		//RE::WeaponTypes::kCrossbow,
 	};
+
+	void EquippedEventHandler(const RE::TESEquipEvent* event);
+	bool AttackButtonHandler(const vrinput::ModInputEvent& e);
+	void PlayerEquipHook(RE::TESForm* a_form);
 
 	void FixEquipSlot(RE::FormID a_formID, bool a_make_onehanded);
 	void FixEquipSlot(RE::TESForm* a_form, bool a_make_onehanded);

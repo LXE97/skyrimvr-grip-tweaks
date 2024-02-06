@@ -3,10 +3,87 @@
 namespace equip_manager
 {
 	using namespace RE;
+	using namespace vrinput;
 
 	BGSEquipSlot* g_twohandequip;
 	BGSEquipSlot* g_onehandequip;
 	BGSEquipSlot* g_shieldequip;
+
+	// Reset weapon slots to normal
+	void EquippedEventHandler(const TESEquipEvent* event)
+	{
+		auto right = PlayerCharacter::GetSingleton()->GetEquippedObject(false);
+		auto left = PlayerCharacter::GetSingleton()->GetEquippedObject(true);
+		if (event->actor.get() == PlayerCharacter::GetSingleton())
+		{
+			if (auto form = TESForm::LookupByID(event->baseObject);
+				form->GetFormType() == FormType::Weapon || form->GetFormType() == FormType::Spell ||
+				(form->GetFormType() == FormType::Armor &&
+					form->As<TESObjectARMO>()->GetEquipSlot() == equip_manager::g_shieldequip))
+			{
+				// reset the currently equipped weapons
+				if (event->equipped)
+				{
+					equip_manager::FixEquipSlot(
+						PlayerCharacter::GetSingleton()->GetEquippedObject(false), false);
+					equip_manager::FixEquipSlot(
+						PlayerCharacter::GetSingleton()->GetEquippedObject(true), false);
+				}
+				else
+				{  // reset the outgoing weapon
+					equip_manager::FixEquipSlot(form, false);
+				}
+			}
+		}
+	}
+
+	// Simulate off hand casting only
+	bool AttackButtonHandler(const ModInputEvent& e)
+	{
+		static bool g_casting_state = false;
+		if (e.button_state == ButtonState::kButtonDown && !g_casting_state)
+		{
+			if (equip_manager::IsTweakWeapon(
+					PlayerCharacter::GetSingleton()->GetEquippedObject(false)))
+			{
+				if (auto offhand_form = PlayerCharacter::GetSingleton()->GetEquippedObject(true))
+				{
+					if (offhand_form->GetFormType() == FormType::Spell)
+					{
+						FocusWindow();
+						SendClick(true, false);
+						g_casting_state = true;
+						return true;
+					}
+				}
+			}
+		}
+		else if (e.button_state == ButtonState::kButtonUp && g_casting_state)
+		{
+			FocusWindow();
+			SendClick(false, false);
+			g_casting_state = false;
+		}
+		return false;
+	}
+
+	// Set all weapons to one handed if applicable to avoid unnecessary unequipping
+	void PlayerEquipHook(RE::TESForm* a_form)
+	{
+		if (auto type = a_form->GetFormType(); type == FormType::Weapon ||
+			(type == FormType::Armor &&
+				a_form->As<TESObjectARMO>()->GetEquipSlot() == g_shieldequip))
+		{
+			FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(false), true);
+			FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(true), true);
+			FixEquipSlot(a_form, true);
+		}
+		else if (type == FormType::Spell)
+		{
+			FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(false), true);
+			FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(true), true);
+		}
+	}
 
 	void FixEquipSlot(FormID a_formID, bool a_make_onehanded)
 	{
@@ -55,5 +132,9 @@ namespace equip_manager
 		g_twohandequip = TESForm::LookupByID(kTwoHandEquipSlot)->As<BGSEquipSlot>();
 		g_onehandequip = TESForm::LookupByID(kRightHandEquipSlot)->As<BGSEquipSlot>();
 		g_shieldequip = TESForm::LookupByID(kShieldEquipSlot)->As<BGSEquipSlot>();
+
+		auto equip_sink = EventSink<TESEquipEvent>::GetSingleton();
+		ScriptEventSourceHolder::GetSingleton()->AddEventSink(equip_sink);
+		equip_sink->AddCallback(equip_manager::EquippedEventHandler);
 	}
 }

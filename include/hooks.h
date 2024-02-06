@@ -1,12 +1,13 @@
 #pragma once
 #include "equip_manager.h"
-#include "menu_checker.h"
-#include "mod_input.h"
 
 namespace hooks
 {
 	using namespace RE;
 	using namespace equip_manager;
+
+	void Install();
+	void InstallHIGGS();
 
 	struct ActorEquipManager_EquipObject
 	{
@@ -16,14 +17,7 @@ namespace hooks
 		{
 			if (a_actor == PlayerCharacter::GetSingleton())
 			{
-				if (auto type = a_object->GetFormType(); type == FormType::Weapon ||
-					(type == FormType::Armor &&
-						a_object->As<TESObjectARMO>()->GetEquipSlot() == g_shieldequip))
-				{  // set all weapons to one handed if applicable to avoid unnecessary unequipping
-					FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(false), true);
-					FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(true), true);
-					FixEquipSlot(a_object, true);
-				}
+				equip_manager::PlayerEquipHook(a_object);
 			}
 			func(a_self, a_actor, a_object, a_extraData, a_count, a_slot, a_queueEquip,
 				a_forceEquip, a_playSounds, a_applyNow);
@@ -40,14 +34,7 @@ namespace hooks
 		{
 			if (a_actor == PlayerCharacter::GetSingleton())
 			{
-				if (auto type = a_object->GetFormType(); type == FormType::Weapon ||
-					(type == FormType::Armor &&
-						a_object->As<TESObjectARMO>()->GetEquipSlot() == g_shieldequip))
-				{  // set all weapons to one handed if applicable to avoid unnecessary unequipping
-					FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(false), true);
-					FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(true), true);
-					FixEquipSlot(a_object, true);
-				}
+				equip_manager::PlayerEquipHook(a_object);
 			}
 			func(a_self, a_actor, a_object, a_extraData, a_count, a_slot, a_queueEquip,
 				a_forceEquip, a_playSounds, a_applyNow, a_slotToReplace);
@@ -62,15 +49,10 @@ namespace hooks
 		{
 			if (a_actor == PlayerCharacter::GetSingleton())
 			{
-				FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(false), true);
-				FixEquipSlot(PlayerCharacter::GetSingleton()->GetEquippedObject(true), true);
+				equip_manager::PlayerEquipHook(a_spell);
 			}
-
 			func(a_self, a_actor, a_spell, a_slot);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
 	};
-
-	void Install();
-	void InstallHIGGS();
 }
