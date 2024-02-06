@@ -50,7 +50,10 @@ void MessageListener(SKSE::MessagingInterface::Message* message)
 	case SKSE::MessagingInterface::kPostPostLoad:
 		info("kPostPostLoad: querying higgs interface");
 		g_higgsInterface = HiggsPluginAPI::GetHiggsInterface001(g_pluginHandle, g_messaging);
-		if (g_higgsInterface) { info("Got higgs interface"); }
+		if (g_higgsInterface)
+		{
+			info("Got higgs interface");
+		}
 		else { info("HIGGS interface not found"); }
 
 		info("kPostPostLoad: querying VRIK interface");

@@ -11,8 +11,7 @@ namespace equip_manager
 	extern RE::BGSEquipSlot* g_shieldequip;
 
 	const std::set<RE::WeaponTypes::WEAPON_TYPE> weapontypes_to_modify = {
-		RE::WeaponTypes::kTwoHandAxe,
-		RE::WeaponTypes::kTwoHandSword,
+		RE::WeaponTypes::kTwoHandAxe, RE::WeaponTypes::kTwoHandSword,
 		//RE::WeaponTypes::kCrossbow,
 	};
 
@@ -21,5 +20,5 @@ namespace equip_manager
 
 	bool IsTweakWeapon(RE::TESForm* a_form);
 
-    void Init();
+	void Init();
 }

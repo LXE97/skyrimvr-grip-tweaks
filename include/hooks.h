@@ -72,4 +72,5 @@ namespace hooks
 	};
 
 	void Install();
+	void InstallHIGGS();
 }

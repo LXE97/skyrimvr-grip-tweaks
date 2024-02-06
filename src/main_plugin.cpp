@@ -14,6 +14,7 @@ namespace griptweaks
 	{
 		RegisterVRInputCallback();
 		hooks::Install();
+		hooks::InstallHIGGS();
 		menu_checker::Init();
 		equip_manager::Init();
 
