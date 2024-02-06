@@ -1,3 +1,4 @@
+*.7z
 .idea
 .vs
 .vscode/settings.json

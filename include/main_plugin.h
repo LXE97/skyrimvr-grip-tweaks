@@ -16,8 +16,8 @@ namespace griptweaks
 	extern OpenVRHookManagerAPI* g_OVRHookManager;
 
 	void StartMod();
-	bool OnAttackButton(const vrinput::ModInputEvent& e);
-	void OnEquipEvent(const RE::TESEquipEvent* event);
 	void RegisterVRInputCallback();
-	void OnGameMenu(RE::MenuOpenCloseEvent const* evn);
+
+	bool AttackButtonHandler(const vrinput::ModInputEvent& e);
+	void EquipEventHandler(const RE::TESEquipEvent* event);
 }

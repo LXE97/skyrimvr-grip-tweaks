@@ -7,8 +7,6 @@ namespace griptweaks
 
 	OpenVRHookManagerAPI* g_OVRHookManager;
 
-	bool g_casting_state = false;
-
 	// TODO: ini setting
 	bool g_left_handed_mode = false;
 
@@ -20,44 +18,49 @@ namespace griptweaks
 		equip_manager::Init();
 
 		// TODO: ini setting for this button
-		vrinput::AddCallback(vr::k_EButton_SteamVR_Trigger, OnAttackButton,
+		vrinput::AddCallback(vr::k_EButton_SteamVR_Trigger, AttackButtonHandler,
 			g_left_handed_mode ? Hand::kRight : Hand::kLeft, ActionType::kPress);
 
 		auto equip_sink = EventSink<TESEquipEvent>::GetSingleton();
 		ScriptEventSourceHolder::GetSingleton()->AddEventSink(equip_sink);
-		equip_sink->AddCallback(OnEquipEvent);
-
-		auto menu_sink = EventSink<RE::MenuOpenCloseEvent>::GetSingleton();
-		menu_sink->AddCallback(OnGameMenu);
-		RE::UI::GetSingleton()->AddEventSink(menu_sink);
+		equip_sink->AddCallback(EquipEventHandler);
 	}
 
-	bool OnAttackButton(const ModInputEvent& e)
+	// 1. Simulate off hand casting	only
+	bool AttackButtonHandler(const ModInputEvent& e)
 	{
+		static bool g_casting_state = false;
 		if (e.button_state == ButtonState::kButtonDown && !g_casting_state)
-		{  // simulate off hand casting
+		{
 			if (equip_manager::IsTweakWeapon(
 					PlayerCharacter::GetSingleton()->GetEquippedObject(false)))
 			{
-				if (auto offhand_form = PlayerCharacter::GetSingleton()->GetEquippedObject(true);
-					offhand_form->GetFormType() == FormType::Spell)
+				if (auto offhand_form = PlayerCharacter::GetSingleton()->GetEquippedObject(true))
 				{
-					SendClick(true, false);
-					g_casting_state = true;
-					return true;
+					if (offhand_form->GetFormType() == FormType::Spell)
+					{
+						FocusWindow();
+						SendClick(true, false);
+						g_casting_state = true;
+						return true;
+					}
 				}
 			}
 		}
 		else if (e.button_state == ButtonState::kButtonUp && g_casting_state)
 		{
+			FocusWindow();
 			SendClick(false, false);
 			g_casting_state = false;
 		}
 		return false;
 	}
 
-	void OnEquipEvent(const TESEquipEvent* event)
+	// 1. Reset weapon slots to normal
+	void EquipEventHandler(const TESEquipEvent* event)
 	{
+		auto right = PlayerCharacter::GetSingleton()->GetEquippedObject(false);
+		auto left = PlayerCharacter::GetSingleton()->GetEquippedObject(true);
 		if (event->actor.get() == PlayerCharacter::GetSingleton())
 		{
 			if (auto form = TESForm::LookupByID(event->baseObject);
@@ -65,10 +68,7 @@ namespace griptweaks
 				(form->GetFormType() == FormType::Armor &&
 					form->As<TESObjectARMO>()->GetEquipSlot() == equip_manager::g_shieldequip))
 			{
-				// reset the incoming/outgoing weapon
-				equip_manager::FixEquipSlot(form, false);
-
-				// reset the currently equipped weapons if we're done with them
+				// reset the currently equipped weapons
 				if (event->equipped)
 				{
 					equip_manager::FixEquipSlot(
@@ -76,24 +76,19 @@ namespace griptweaks
 					equip_manager::FixEquipSlot(
 						PlayerCharacter::GetSingleton()->GetEquippedObject(true), false);
 				}
+				else
+				{  // reset the outgoing weapon
+					equip_manager::FixEquipSlot(form, false);
+				}
 			}
 		}
 	}
 
-	void OnGameMenu(RE::MenuOpenCloseEvent const* evn)
-	{
-		static const BSFixedString gamemenu = "Journal Menu";
-		if (!evn->opening && evn->menuName == gamemenu)
-		{
-			if (auto setting =
-					INISettingCollection::GetSingleton()->GetSetting("bLeftHandedMode:VRInput"))
-			{
-				SKSE::log::trace("got setting");
-				g_left_handed_mode = setting->GetBool();
-			}
-			else { SKSE::log::trace("failed"); }
-		}
-	}
+	// 2. Set / reset grip memory button handler
+	bool GripMemoryButtonHandler(const ModInputEvent& e) { return false; }
+
+	// 2. Set grip location to memory
+	bool OnHiggsGrip() { return false; }
 
 	void RegisterVRInputCallback()
 	{
