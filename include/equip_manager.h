@@ -17,6 +17,8 @@ namespace equip_manager
 		//RE::WeaponTypes::kCrossbow,
 	};
 
+	void Init();
+
 	void EquippedEventHandler(const RE::TESEquipEvent* event);
 	bool AttackButtonHandler(const vrinput::ModInputEvent& e);
 	void PlayerEquipHook(RE::TESForm* a_form);
@@ -25,6 +27,4 @@ namespace equip_manager
 	void FixEquipSlot(RE::TESForm* a_form, bool a_make_onehanded);
 
 	bool IsTweakWeapon(RE::TESForm* a_form);
-
-	void Init();
 }

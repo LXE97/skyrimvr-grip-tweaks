@@ -11,7 +11,7 @@ namespace vrinput
 	constexpr const char* kControllerNodeName[2] = { kRightHandNodeName, kLeftHandNodeName };
 
 	constexpr std::array all_buttons{
-		vr::k_EButton_System,
+		// vr::k_EButton_System, don't think this will ever be useful
 		vr::k_EButton_ApplicationMenu,
 		vr::k_EButton_Grip,
 		vr::k_EButton_A,

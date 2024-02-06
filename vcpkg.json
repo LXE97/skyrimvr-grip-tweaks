@@ -3,6 +3,7 @@
   "name": "vr-grip-tweaks",
   "version-string": "0.0.1",
   "dependencies": [
-    "commonlibsse-ng-vr"
+    "commonlibsse-ng-vr",
+    "simpleini"
   ]
 }
