@@ -21,6 +21,7 @@ namespace equip_manager
         ScriptEventSourceHolder::GetSingleton()->AddEventSink(equip_sink);
         equip_sink->AddCallback(EquippedEventHandler);
 
+		// TODO : read left hand from game ini
         vrinput::AddCallback(vr::k_EButton_SteamVR_Trigger, AttackButtonHandler,
             (int)Config::GetSingleton()->GetSetting(Config::LeftHandedMode) ? Hand::kRight :
                                                                                Hand::kLeft,
@@ -57,7 +58,6 @@ namespace equip_manager
     // Simulate off hand casting only
     bool AttackButtonHandler(const ModInputEvent& e)
     {
-        auto        poop = Config::GetSingleton();
         static bool g_casting_state = false;
         if (e.button_state == ButtonState::kButtonDown && !g_casting_state)
         {

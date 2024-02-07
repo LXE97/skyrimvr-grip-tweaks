@@ -11,22 +11,25 @@ namespace griptweaks
     {
         RegisterVRInputCallback();
         menu_checker::Init();
-		Config::GetSingleton()->Load();
+        Config::GetSingleton()->Load();
 
         if (Config::GetSingleton()->GetSetting(Config::Enable2Hto1H) && g_higgsInterface)
         {
             hooks::Install();
             hooks::InstallHIGGS();
+            //hooks::InstallWeaponThrow();
             equip_manager::Init();
             SKSE::log::info("Enabled feature: 2H to 1H");
         }
 
-        if (Config::GetSingleton()->GetSetting(Config::EnableHiggsGripMemory) && g_higgsInterface) {
-			SKSE::log::info("Enabled feature: HIGGS Grip Memory");
-		}
-        if (Config::GetSingleton()->GetSetting(Config::EnableGripControlConditions)) {
-			SKSE::log::info("Enabled feature: HIGGS/VRIK Conditions");
-		}
+        if (Config::GetSingleton()->GetSetting(Config::EnableHiggsGripMemory) && g_higgsInterface)
+        {
+            SKSE::log::info("Enabled feature: HIGGS Grip Memory");
+        }
+        if (Config::GetSingleton()->GetSetting(Config::EnableGripControlConditions))
+        {
+            SKSE::log::info("Enabled feature: HIGGS/VRIK Conditions");
+        }
     }
 
     // 2. Set / reset grip memory button handler
